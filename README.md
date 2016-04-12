@@ -1,3 +1,6 @@
+# Softbody-LOVE
+A softbody experiment using LOVE2D
+
 # LOVE2D
 
 To get started go to the following:
