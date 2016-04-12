@@ -93,7 +93,7 @@ end
 
 -- Draw a coloured rectangle.
 function love.draw()
-    love.graphics.setWireframe( true )
+    -- love.graphics.setWireframe( true )
     love.graphics.setColor(72, 160, 14) -- set the drawing color to green for the ground
     love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints())) -- draw a "filled in" polygon using the ground's coordinates
 
@@ -103,10 +103,7 @@ function love.draw()
     love.graphics.setColor(193, 47, 14) --set the drawing color to red for the ball
 
     -- Softbody
-    love.graphics.circle("fill", objects.core.body:getX(), objects.core.body:getY(), objects.core.shape:getRadius())
-    for i,b in ipairs(objects.nodes) do
-      love.graphics.circle("fill", b.body:getX(), b.body:getY(), b.shape:getRadius())
-    end
+    drawSoftbody()
 
     love.graphics.setColor(50, 50, 50) -- set the drawing color to grey for the blocks
     love.graphics.polygon("fill", objects.block1.body:getWorldPoints(objects.block1.shape:getPoints()))
@@ -119,4 +116,33 @@ function createSphere(pX, pY,r)
     sphere.shape = love.physics.newCircleShape(r) --the ball's shape has a radius of 20
     sphere.fixture = love.physics.newFixture(sphere.body, sphere.shape, 1) -- Attach fixture to body and give it a density of 1.
     return sphere
+end
+
+function drawSoftbody()
+    -- Softbody
+    love.graphics.circle("fill", objects.core.body:getX(), objects.core.body:getY(), objects.core.shape:getRadius())
+    for i,b in ipairs(objects.nodes) do
+      love.graphics.circle("fill", b.body:getX(), b.body:getY(), b.shape:getRadius())
+    end
+
+    -- get node locations
+
+    local vertices = getSoftbodyVertices()
+
+    -- passing the table to the function as a second argument
+    love.graphics.setLineStyle("smooth");
+	love.graphics.setLineWidth(2*2) -- radius of the nodes around the center body. This is double to cover the entire physical space
+    -- love.graphics.polygon("fill", vertices)
+    love.graphics.polygon("line", vertices)
+
+    love.graphics.setLineWidth(1)
+end
+
+function getSoftbodyVertices()
+    local vert = {}
+    for i,v in ipairs(objects.nodes) do
+        table.insert(vert, v.body:getX())
+        table.insert(vert, v.body:getY())
+    end
+    return vert
 end
